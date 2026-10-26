@@ -1,40 +1,105 @@
 
-const form = document.getElementById("customerForm");
-const message = document.getElementById("message");
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>কাস্টমার তথ্য ফর্ম</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f4f6f8;
+    }
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbxGf5NChukrRpl36R7oBuVVgm_o6O2CfaTqIMnDZ8mhr-JCqP9kz7Q0u0jSPVZZrpQ9/exec";
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
 
-form.addEventListener("submit", async function(event) {
-  event.preventDefault();
+    label {
+      display: block;
+      margin-top: 15px;
+    }
 
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const address = document.getElementById("address").value.trim();
+    input, textarea, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      font-size: 16px;
+    }
 
-  if (!name || !phone || !address) {
-    message.textContent = "সব তথ্য পূরণ করো।";
-    return;
-  }
+    button {
+      margin-top: 20px;
+      background: #1455a0;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>কাস্টমার তথ্য ফর্ম</h2>
 
-  message.textContent = "তথ্য পাঠানো হচ্ছে...";
+  <form id="customerForm">
+    <label for="name">নাম</label>
+    <input id="name" name="name" maxlength="100" required>
 
-  try {
-    await fetch(scriptURL, {
-      method: "POST",
-      mode: "no-cors",
-      body: new URLSearchParams({
-        name: name,
-        phone: phone,
-        address: address
-      })
+    <label for="phone">মোবাইল নম্বর</label>
+    <input id="phone" name="phone" type="tel"
+           maxlength="20" required>
+
+    <label for="address">ঠিকানা</label>
+    <textarea id="address" name="address"
+              maxlength="500" required></textarea>
+
+    <button type="submit">তথ্য জমা দিন</button>
+    <p id="message" role="status"></p>
+  </form>
+
+  <script>
+    const form = document.getElementById("customerForm");
+    const message = document.getElementById("message");
+
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxGf5NChukrRpl36R7oBuVVgm_o6O2CfaTqIMnDZ8mhr-JCqP9kz7Q0u0jSPVZZrpQ9/exec";
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+
+      if (!name || !phone || !address) {
+        message.textContent = "সব তথ্য পূরণ করো।";
+        return;
+      }
+
+      message.textContent = "তথ্য পাঠানো হচ্ছে...";
+
+      try {
+        await fetch(scriptURL, {
+          method: "POST",
+          mode: "no-cors",
+          body: new URLSearchParams({
+            name: name,
+            phone: phone,
+            address: address
+          })
+        });
+
+        message.textContent =
+          "অনুরোধ পাঠানো হয়েছে। Google Sheet খুলে তথ্য যাচাই করো।";
+        form.reset();
+      } catch (error) {
+        message.textContent = "সমস্যা হয়েছে। আবার চেষ্টা করো।";
+      }
     });
-
-    message.textContent =
-      "অনুরোধ পাঠানো হয়েছে। Google Sheet খুলে তথ্য যাচাই করো।";
-
-    form.reset();
-  } catch (error) {
-    message.textContent =
-      "সমস্যা হয়েছে। আবার চেষ্টা করো।";
-  }
-});
+  </script>
+</body>
+</html>
