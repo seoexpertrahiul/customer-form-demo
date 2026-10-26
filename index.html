@@ -5,117 +5,183 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>কাস্টমার তথ্য ফর্ম</title>
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      padding: 24px 14px;
+      padding: 20px;
       font-family: Arial, sans-serif;
-      background: #f0f4fa;
-      color: #172033;
+      background: #f1f5f9;
+      color: #1e293b;
     }
 
-    .card {
-      max-width: 440px;
+    .container {
+      max-width: 450px;
       margin: 30px auto;
-      padding: 26px;
+      padding: 25px;
       background: white;
-      border-radius: 16px;
-      box-shadow: 0 6px 25px #152c5015;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
 
-    h1 {
+    h2 {
       text-align: center;
-      color: #1746a2;
-      font-size: 25px;
+      color: #1455a0;
+      margin-top: 0;
     }
 
-    p {
-      line-height: 1.6;
-      color: #526078;
+    .description {
+      text-align: center;
+      color: #64748b;
+      font-size: 14px;
     }
 
     label {
       display: block;
-      margin-top: 16px;
+      margin-top: 18px;
       font-weight: bold;
     }
 
-    input, textarea {
+    input,
+    textarea {
       width: 100%;
       margin-top: 7px;
       padding: 12px;
       border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font: inherit;
+      border-radius: 6px;
+      font-size: 16px;
     }
 
     textarea {
-      min-height: 95px;
+      min-height: 100px;
       resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: 2px solid #93c5fd;
+      border-color: #2563eb;
     }
 
     button {
       width: 100%;
       margin-top: 22px;
-      padding: 14px;
-      border: 0;
-      border-radius: 8px;
-      background: #1746a2;
+      padding: 13px;
+      background: #1455a0;
       color: white;
+      border: none;
+      border-radius: 6px;
       font-size: 16px;
       cursor: pointer;
     }
 
-    .notice {
-      font-size: 13px;
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    #message {
       text-align: center;
+      margin-bottom: 0;
+      font-size: 14px;
     }
   </style>
 </head>
+
 <body>
-  <main class="card">
-    <h1>কাস্টমার তথ্য ফর্ম</h1>
-    <p>অনুগ্রহ করে নিচের তথ্যগুলো পূরণ করে Submit করুন।</p>
+  <div class="container">
+    <h2>কাস্টমার তথ্য ফর্ম</h2>
+    <p class="description">
+      নিচে তোমার প্রয়োজনীয় তথ্য পূরণ করো
+    </p>
 
-    <form
-      action="এখানে_আপনার_WEB_APP_URL_দিন"
-      method="post">
-
-      <label for="name">আপনার নাম</label>
+    <form id="customerForm">
+      <label for="name">তোমার নাম</label>
       <input
+        type="text"
         id="name"
         name="name"
-        type="text"
         maxlength="100"
-        autocomplete="name"
-        required>
+        placeholder="সম্পূর্ণ নাম লিখো"
+        required
+      >
 
-      <label for="phone">ফোন নম্বর</label>
+      <label for="phone">মোবাইল নম্বর</label>
       <input
+        type="tel"
         id="phone"
         name="phone"
-        type="tel"
-        maxlength="30"
-        autocomplete="tel"
-        required>
+        maxlength="20"
+        placeholder="যেমন: 01700000000"
+        required
+      >
 
-      <label for="address">আপনার ঠিকানা</label>
+      <label for="address">ঠিকানা</label>
       <textarea
         id="address"
         name="address"
         maxlength="500"
-        autocomplete="street-address"
-        required></textarea>
+        placeholder="তোমার ঠিকানা লিখো"
+        required
+      ></textarea>
 
-      <p class="notice">
-        আপনার দেওয়া তথ্য কাস্টমার যোগাযোগের প্রয়োজনে
-        সংরক্ষণ করা হবে।
-      </p>
+      <button type="submit" id="submitButton">
+        তথ্য জমা দিন
+      </button>
 
-      <button type="submit">তথ্য জমা দিন</button>
+      <p id="message" role="status"></p>
     </form>
-  </main>
+  </div>
+
+  <script>
+    const form = document.getElementById("customerForm");
+    const message = document.getElementById("message");
+    const submitButton = document.getElementById("submitButton");
+
+    const scriptURL =
+      "https://script.google.com/macros/s/AKfycbxGf5NChukrRpl36R7oBuVVgm_o6O2CfaTqIMnDZ8mhr-JCqP9kz7Q0u0jSPVZZrpQ9/exec";
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+
+      if (!name || !phone || !address) {
+        message.textContent = "সব তথ্য পূরণ করো।";
+        return;
+      }
+
+      submitButton.disabled = true;
+      message.textContent = "তথ্য পাঠানোর অনুরোধ করা হচ্ছে...";
+
+      try {
+        await fetch(scriptURL, {
+          method: "POST",
+          mode: "no-cors",
+          body: new URLSearchParams({
+            name: name,
+            phone: phone,
+            address: address
+          })
+        });
+
+        message.textContent =
+          "অনুরোধ পাঠানো হয়েছে। Google Sheet-এ তথ্য জমা হয়েছে কি না যাচাই করো।";
+
+        form.reset();
+      } catch (error) {
+        message.textContent =
+          "অনুরোধ পাঠানো যায়নি। আবার চেষ্টা করো।";
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
