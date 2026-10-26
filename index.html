@@ -6,100 +6,116 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>কাস্টমার তথ্য ফর্ম</title>
   <style>
+    * { box-sizing: border-box; }
+
     body {
+      margin: 0;
+      padding: 24px 14px;
       font-family: Arial, sans-serif;
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #f4f6f8;
+      background: #f0f4fa;
+      color: #172033;
     }
 
-    form {
+    .card {
+      max-width: 440px;
+      margin: 30px auto;
+      padding: 26px;
       background: white;
-      padding: 20px;
-      border-radius: 10px;
+      border-radius: 16px;
+      box-shadow: 0 6px 25px #152c5015;
+    }
+
+    h1 {
+      text-align: center;
+      color: #1746a2;
+      font-size: 25px;
+    }
+
+    p {
+      line-height: 1.6;
+      color: #526078;
     }
 
     label {
       display: block;
-      margin-top: 15px;
+      margin-top: 16px;
+      font-weight: bold;
     }
 
-    input, textarea, button {
-      box-sizing: border-box;
+    input, textarea {
       width: 100%;
+      margin-top: 7px;
       padding: 12px;
-      margin-top: 6px;
-      font-size: 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 95px;
+      resize: vertical;
     }
 
     button {
-      margin-top: 20px;
-      background: #1455a0;
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px;
+      border: 0;
+      border-radius: 8px;
+      background: #1746a2;
       color: white;
-      border: none;
-      border-radius: 5px;
+      font-size: 16px;
       cursor: pointer;
+    }
+
+    .notice {
+      font-size: 13px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h2>কাস্টমার তথ্য ফর্ম</h2>
+  <main class="card">
+    <h1>কাস্টমার তথ্য ফর্ম</h1>
+    <p>অনুগ্রহ করে নিচের তথ্যগুলো পূরণ করে Submit করুন।</p>
 
-  <form id="customerForm">
-    <label for="name">নাম</label>
-    <input id="name" name="name" maxlength="100" required>
+    <form
+      action="এখানে_আপনার_WEB_APP_URL_দিন"
+      method="post">
 
-    <label for="phone">মোবাইল নম্বর</label>
-    <input id="phone" name="phone" type="tel"
-           maxlength="20" required>
+      <label for="name">আপনার নাম</label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        maxlength="100"
+        autocomplete="name"
+        required>
 
-    <label for="address">ঠিকানা</label>
-    <textarea id="address" name="address"
-              maxlength="500" required></textarea>
+      <label for="phone">ফোন নম্বর</label>
+      <input
+        id="phone"
+        name="phone"
+        type="tel"
+        maxlength="30"
+        autocomplete="tel"
+        required>
 
-    <button type="submit">তথ্য জমা দিন</button>
-    <p id="message" role="status"></p>
-  </form>
+      <label for="address">আপনার ঠিকানা</label>
+      <textarea
+        id="address"
+        name="address"
+        maxlength="500"
+        autocomplete="street-address"
+        required></textarea>
 
-  <script>
-    const form = document.getElementById("customerForm");
-    const message = document.getElementById("message");
+      <p class="notice">
+        আপনার দেওয়া তথ্য কাস্টমার যোগাযোগের প্রয়োজনে
+        সংরক্ষণ করা হবে।
+      </p>
 
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxGf5NChukrRpl36R7oBuVVgm_o6O2CfaTqIMnDZ8mhr-JCqP9kz7Q0u0jSPVZZrpQ9/exec";
-
-    form.addEventListener("submit", async function(event) {
-      event.preventDefault();
-
-      const name = document.getElementById("name").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const address = document.getElementById("address").value.trim();
-
-      if (!name || !phone || !address) {
-        message.textContent = "সব তথ্য পূরণ করো।";
-        return;
-      }
-
-      message.textContent = "তথ্য পাঠানো হচ্ছে...";
-
-      try {
-        await fetch(scriptURL, {
-          method: "POST",
-          mode: "no-cors",
-          body: new URLSearchParams({
-            name: name,
-            phone: phone,
-            address: address
-          })
-        });
-
-        message.textContent =
-          "অনুরোধ পাঠানো হয়েছে। Google Sheet খুলে তথ্য যাচাই করো।";
-        form.reset();
-      } catch (error) {
-        message.textContent = "সমস্যা হয়েছে। আবার চেষ্টা করো।";
-      }
-    });
-  </script>
+      <button type="submit">তথ্য জমা দিন</button>
+    </form>
+  </main>
 </body>
 </html>
